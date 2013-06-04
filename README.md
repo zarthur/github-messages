@@ -1,8 +1,10 @@
 github-messages
 ===============
-Convert short (24 or less characters) to messages and display them in the
-github activity chart.
+Represent short (24 or less characters) messages with a 3x3 font and display
+them in the github activity chart.
 
+Currently, only previewing the message with matplotlib in the 3x3 font works;
+github commit functionality to be added soonish.
 
 Requirements
 ----
