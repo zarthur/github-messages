@@ -27,7 +27,7 @@ Example
 Entering the following at the command line will generate a preview, as shown
 below, in matplotlib.
 
-    python3 preview.py this is a test message
+    python3 preview.py This is a test message.
 
 ![matplotlib image](https://raw.github.com/zarthur/github-messages/master/images/test_message.png)
 
