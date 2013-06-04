@@ -31,3 +31,9 @@ below, in matplotlib.
 
 ![matplotlib image](https://raw.github.com/zarthur/github-messages/master/images/test_message.png)
 
+Sources
+----
+
+- 3x3 Font
+  - http://www.norwegianink.com/
+  - http://www.dafont.com/3x3-font-for-nerds.font
