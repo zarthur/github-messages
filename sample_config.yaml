@@ -1,0 +1,6 @@
+username: "First Last"
+email: test_user@fake_email.com
+ssh_path: ~/.ssh
+ssh_key_path: ~/.ssh/github_rsa
+clone_base_path: /tmp
+repository_uri: git@github.com:test_user/test-repo.git
