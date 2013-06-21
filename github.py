@@ -18,13 +18,16 @@ SSH_CONFIG_TEMPLATE = """Host GitHub
   IdentityFile {key_path}
 """
 
+TIME_FMT = "%a %b %d %H:%M:%S %Y {utc_offset}"
+
+
 def next_weekday(d, weekday):
     """Get date of first specified weekday after specified date
     Source: http://stackoverflow.com/questions/6558535/
             python-find-the-date-for-the-first-monday-after-a-given-a-date
     """
     days_ahead = weekday - d.weekday()
-    if days_ahead <= 0: # Target day already happened this week
+    if days_ahead <= 0:  # Target day already happened this week
         days_ahead += 7
     return d + datetime.timedelta(days_ahead)
 
@@ -36,7 +39,10 @@ class GithubCommit():
         necessary ssh config file
         """
         with open(config_path) as config_file:
-            [setattr(self, k, v) for k, v in yaml.load(config_file).items()]
+            for k, v in yaml.load(config_file).items():
+                setattr(self, k, v)
+        self.time_fmt = TIME_FMT.format(utc_offset=self.utc_offset)
+        self.repo_dir = os.path.join(self.clone_base_path, self.repo_name)
 
         # move/create ssh config file
         self._ssh_config_path = os.path.join(self.ssh_path, 'config')
@@ -63,13 +69,24 @@ class GithubCommit():
         last_year = datetime.date.today() - datetime.timedelta(weeks=52)
         commit_day = next_weekday(last_year, 6)
 
+        os.chdir(self.repo_dir)
+
         for week in message_array:
             for day in week:
-                # commit stuff
-                commit_dat += datetime.timedelta(days=1)
+                date_str = commit_day.strftime(self.time_fmt)
+                with open('data', 'w') as outfile:
+                    outfile.write(date_str)
+
+                os.environ['GIT_AUTHOR_DATE'] = date_str
+                os.environ['GIT_COMMITTER_DATE'] = date_str
+
+                os.system('git add .')
+                os.system('git commit -m "{date}"'.format(date=date_str))
+                commit_day += datetime.timedelta(days=1)
 
     def push(self):
-        pass
+        os.chdir(self.repo_dir)
+        os.system('git push')
 
     def cleanup(self):
         """Restore the original ssh config if it existed, delete otherwise"""
@@ -77,3 +94,12 @@ class GithubCommit():
             shutil.move(self._ssh_conifg_backup, self._ssh_config_path)
         else:
             shutil.delete(self._ssh_config_path)
+
+
+if __name__ == '__main__':
+    config_path = sys.argv[1]
+    message = ' '.join(sys.argv[2:])
+    gc = GithubCommit(config_path)
+    gc.gen_commits(message)
+    gc.push()
+    gc.cleanup()
