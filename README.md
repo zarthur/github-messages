@@ -6,6 +6,9 @@ them in the github activity chart.
 Currently, only previewing the message with matplotlib in the 3x3 font works;
 github commit functionality to be added soonish.
 
+This will probably be very timezone dependent; so while it might look correct
+to you, it probably will look weird to someone in a different timezone.
+
 Requirements
 ----
 - numpy
