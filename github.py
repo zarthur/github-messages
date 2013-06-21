@@ -65,6 +65,7 @@ class GithubCommit():
         os.environ['GIT_AUTHOR_EMAIL'] = self.email
 
     def gen_commits(self, message):
+        """Generate commits on appropriate dates based on message"""
         message_array = fontify.convert(message).transpose()
         last_year = datetime.date.today() - datetime.timedelta(weeks=52)
         commit_day = next_weekday(last_year, 6)
@@ -86,6 +87,7 @@ class GithubCommit():
                 commit_day += datetime.timedelta(days=1)
 
     def push(self):
+        """Push commits to GitHub"""
         os.chdir(self.repo_dir)
         os.system('git push')
 
