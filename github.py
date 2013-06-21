@@ -73,15 +73,16 @@ class GithubCommit():
 
         for week in message_array:
             for day in week:
-                date_str = commit_day.strftime(self.time_fmt)
-                with open('data', 'w') as outfile:
-                    outfile.write(date_str)
+                if day == 1:
+                    date_str = commit_day.strftime(self.time_fmt)
+                    with open('data', 'w') as outfile:
+                        outfile.write(date_str)
 
-                os.environ['GIT_AUTHOR_DATE'] = date_str
-                os.environ['GIT_COMMITTER_DATE'] = date_str
+                    os.environ['GIT_AUTHOR_DATE'] = date_str
+                    os.environ['GIT_COMMITTER_DATE'] = date_str
 
-                os.system('git add .')
-                os.system('git commit -m "{date}"'.format(date=date_str))
+                    os.system('git add .')
+                    os.system('git commit -m "{date}"'.format(date=date_str))
                 commit_day += datetime.timedelta(days=1)
 
     def push(self):
