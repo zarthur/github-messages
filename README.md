@@ -9,6 +9,12 @@ github commit functionality to be added soonish.
 This will probably be very timezone dependent; so while it might look correct
 to you, it probably will look weird to someone in a different timezone.
 
+If a new github account is created, be sure to add the appropriate keys in order
+to push.  An alternative to using additional keys is to make your primary user
+a collaborator on the new repo of the new GitHub user;  commits will be made
+using the username/email specified in the config but the push will be done as
+the primary user.
+
 Requirements
 ----
 - numpy

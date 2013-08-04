@@ -12,11 +12,10 @@ import yaml
 import fontify
 
 
-SSH_CONFIG_TEMPLATE = """Host GitHub
-  HostName github.com
-  User {username}
-  IdentityFile {key_path}
-"""
+# SSH_CONFIG_TEMPLATE = """Host github.com
+#   HostName github.com
+#   IdentityFile {key_path}
+# """
 
 TIME_FMT = "%a %b %d %H:%M:%S %Y {utc_offset}"
 
@@ -45,18 +44,17 @@ class GithubCommit():
         self.repo_dir = os.path.join(self.clone_base_path, self.repo_name)
 
         # move/create ssh config file
-        self._ssh_config_path = os.path.join(self.ssh_path, 'config')
-        self._ssh_config_existed = os.path.exists(self._ssh_config_path)
+        # self._ssh_config_path = os.path.join(self.ssh_path, 'config')
+        # self._ssh_config_existed = os.path.exists(self._ssh_config_path)
 
-        if self._ssh_config_existed:
-            self._ssh_config_backup = os.path.join(self.ssh_path, '_config.bak')
-            shutil.move(self._ssh_config_path, self._ssh_config_backup)
+        # if self._ssh_config_existed:
+        #     self._ssh_config_backup = os.path.join(self.ssh_path, '_config.bak')
+        #     shutil.move(self._ssh_config_path, self._ssh_config_backup)
 
-        ssh_config = SSH_CONFIG_TEMPLATE.format(username=self.username,
-                                                key_path=self.ssh_key_path)
+        # ssh_config = SSH_CONFIG_TEMPLATE.format(key_path=self.ssh_key_path)
 
-        with open(self._ssh_config_path, 'w') as config_file:
-            config_file.write(ssh_config)
+        # with open(self._ssh_config_path, 'w') as config_file:
+        #     config_file.write(ssh_config)
 
         # set necessary environment variables
         os.environ['GIT_COMMITTER_NAME'] = self.username
@@ -94,12 +92,12 @@ class GithubCommit():
     def push(self):
         """Push commits to GitHub"""
         os.chdir(self.repo_dir)
-        os.system('git push')
+        os.system('git push -v')
 
     def cleanup(self):
         """Restore the original ssh config if it existed, delete otherwise"""
         if self._ssh_config_existed:
-            shutil.move(self._ssh_conifg_backup, self._ssh_config_path)
+            shutil.move(self._ssh_config_backup, self._ssh_config_path)
         else:
             shutil.delete(self._ssh_config_path)
 
@@ -109,5 +107,5 @@ if __name__ == '__main__':
     message = ' '.join(sys.argv[2:])
     gc = GithubCommit(config_path)
     gc.gen_commits(message)
-    #gc.push()
-    gc.cleanup()
+    gc.push()
+    # gc.cleanup()
