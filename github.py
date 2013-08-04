@@ -50,7 +50,7 @@ class GithubCommit():
 
         if self._ssh_config_existed:
             self._ssh_config_backup = os.path.join(self.ssh_path, '_config.bak')
-            shutil.move(self._ssh_conifg_path, self._ssh_config_backup)
+            shutil.move(self._ssh_config_path, self._ssh_config_backup)
 
         ssh_config = SSH_CONFIG_TEMPLATE.format(username=self.username,
                                                 key_path=self.ssh_key_path)
@@ -69,6 +69,11 @@ class GithubCommit():
         message_array = fontify.convert(message).transpose()
         last_year = datetime.date.today() - datetime.timedelta(weeks=52)
         commit_day = next_weekday(last_year, 6)
+
+        if not os.path.exists(self.repo_dir):
+            os.chdir(os.path.join(os.path.split(self.repo_dir)[:-1])[0])
+            print(self.repository_uri)
+            os.system('git clone {repo}'.format(repo=self.repository_uri))
 
         os.chdir(self.repo_dir)
 
@@ -104,5 +109,5 @@ if __name__ == '__main__':
     message = ' '.join(sys.argv[2:])
     gc = GithubCommit(config_path)
     gc.gen_commits(message)
-    gc.push()
+    #gc.push()
     gc.cleanup()
