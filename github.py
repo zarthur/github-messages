@@ -5,18 +5,12 @@
 import datetime
 import dateutil.relativedelta
 import os
-import shutil
 import sys
 
 import yaml
 
 import fontify
 
-
-# SSH_CONFIG_TEMPLATE = """Host github.com
-#   HostName github.com
-#   IdentityFile {key_path}
-# """
 
 TIME_FMT = "%a %b %d %H:%M:%S %Y {utc_offset}"
 
@@ -35,29 +29,13 @@ def next_weekday(d, weekday):
 class GithubCommit():
     """Make necessary commits to a github repository to display message"""
     def __init__(self, config_path):
-        """Load conifguration, set some environment variables, and create the
-        necessary ssh config file
-        """
+        """Load conifguration and set some environment variables"""
         with open(config_path) as config_file:
             for k, v in yaml.load(config_file).items():
                 setattr(self, k, v)
         self.time_fmt = TIME_FMT.format(utc_offset=self.utc_offset)
         self.repo_dir = os.path.join(self.clone_base_path, self.repo_name)
 
-        # move/create ssh config file
-        # self._ssh_config_path = os.path.join(self.ssh_path, 'config')
-        # self._ssh_config_existed = os.path.exists(self._ssh_config_path)
-
-        # if self._ssh_config_existed:
-        #     self._ssh_config_backup = os.path.join(self.ssh_path, '_config.bak')
-        #     shutil.move(self._ssh_config_path, self._ssh_config_backup)
-
-        # ssh_config = SSH_CONFIG_TEMPLATE.format(key_path=self.ssh_key_path)
-
-        # with open(self._ssh_config_path, 'w') as config_file:
-        #     config_file.write(ssh_config)
-
-        # set necessary environment variables
         os.environ['GIT_COMMITTER_NAME'] = self.username
         os.environ['GIT_AUTHOR_NAME'] = self.username
         os.environ['GIT_COMMITTER_EMAIL'] = self.email
@@ -69,7 +47,6 @@ class GithubCommit():
         last_year = datetime.datetime.now() - \
                     dateutil.relativedelta.relativedelta(years=1)
         commit_day = next_weekday(last_year, 6)
-        #import pudb; pudb.set_trace()
 
         if not os.path.exists(self.repo_dir):
             os.chdir(os.path.join(os.path.split(self.repo_dir)[:-1])[0])
@@ -97,13 +74,6 @@ class GithubCommit():
         os.chdir(self.repo_dir)
         os.system('git push origin master -v')
 
-    def cleanup(self):
-        """Restore the original ssh config if it existed, delete otherwise"""
-        if self._ssh_config_existed:
-            shutil.move(self._ssh_config_backup, self._ssh_config_path)
-        else:
-            shutil.delete(self._ssh_config_path)
-
 
 if __name__ == '__main__':
     config_path = sys.argv[1]
@@ -111,4 +81,3 @@ if __name__ == '__main__':
     gc = GithubCommit(config_path)
     gc.gen_commits(message)
     gc.push()
-    # gc.cleanup()
