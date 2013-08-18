@@ -3,6 +3,7 @@
 """Create 24 character message on the GitHub contributions chart"""
 
 import datetime
+import dateutil.relativedelta
 import os
 import shutil
 import sys
@@ -65,8 +66,10 @@ class GithubCommit():
     def gen_commits(self, message):
         """Generate commits on appropriate dates based on message"""
         message_array = fontify.convert(message).transpose()
-        last_year = datetime.date.today() - datetime.timedelta(weeks=52)
+        last_year = datetime.datetime.now() - \
+                    dateutil.relativedelta.relativedelta(years=1)
         commit_day = next_weekday(last_year, 6)
+        #import pudb; pudb.set_trace()
 
         if not os.path.exists(self.repo_dir):
             os.chdir(os.path.join(os.path.split(self.repo_dir)[:-1])[0])
@@ -92,7 +95,7 @@ class GithubCommit():
     def push(self):
         """Push commits to GitHub"""
         os.chdir(self.repo_dir)
-        os.system('git push -v')
+        os.system('git push origin master -v')
 
     def cleanup(self):
         """Restore the original ssh config if it existed, delete otherwise"""
