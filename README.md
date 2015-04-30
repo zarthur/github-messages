@@ -43,14 +43,3 @@ produced this:
 ## Sources
 - [3x3 Font](http://www.norwegianink.com), [More](http://www.dafont.com/3x3-font-for-nerds.font)
 - [Python function to find next specified weekday after a given date](http://stackoverflow.com/questions/6558535/python-find-the-date-for-the-first-monday-after-a-given-a-date)
-
-
-## License
-Copyright © 2013 Arthur Neuman <<arthur.neuman@gmail.com>>
-
-This program is free software. It comes without any warranty, to
-the extent permitted by applicable law. You can redistribute it
-and/or modify it under the terms of the Do What The Fuck You Want
-To Public License, Version 2, as published by Sam Hocevar. See
-<http://www.wtfpl.net/> for more details.
-
